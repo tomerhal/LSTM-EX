@@ -2,14 +2,14 @@ import torch
 
 
 class BaseInputEncoder(torch.nn.Module):
-    def __init__(self,embedding_size, encoding_layer):
+    def __init__(self, encoding_layer):
         super().__init__()
 
         self.encoding_layer = encoding_layer
 
 
 
-    def forward(self, m_a: torch.Tensor, m_b: torch.Tensor):
-        a_hat =  self.composition_layer(self.activation_layer(self.FF_layer(m_a)))
-        b_hat =  self.composition_layer(self.activation_layer(self.FF_layer(m_b)))
+    def forward(self, a_vector: torch.Tensor, b_vector: torch.Tensor):
+        a_hat =  self.encoding_layer(a_vector)
+        b_hat =  self.encoding_layer(b_vector)
         return a_hat, b_hat

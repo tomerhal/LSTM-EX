@@ -21,6 +21,6 @@ class BaseInferenceComposition(torch.nn.Module):
 
 
     def forward(self, m_a: torch.Tensor, m_b: torch.Tensor):
-        v_a =  self.composition_layer(self.activation_layer(self.FF_layer(m_a)))
+        v_a =  self.composition_layer(self.activation_layer(self.FF_layer(m_a)))    #TODO gets h_t-1 l/r for tree
         v_b =  self.composition_layer(self.activation_layer(self.FF_layer(m_b)))
         return v_a, v_b

@@ -1,24 +1,21 @@
 import abc
-
 import torch
+from inference_levels.InputEncoders.input_encoding import BaseInputEncoder
+from inference_levels.local_inferencers.local_inference import BaseLocalInference
+from inference_levels.inference_compositors.base_inference_composition import BaseInferenceComposition
+from inference_levels.predictors.predictor import BasePredictor
 
-
-class Base(torch.nn.Module, abc.ABC):
-    def __init__(self, input_encoding: InputEncoding, local_inference: LocalInference, infrence_composition: InferenceComposition, predictor: Predictor):
+class BaseModel(torch.nn.Module):
+    def __init__(self, input_encoding: BaseInputEncoder, local_inference: BaseLocalInference, inference_composition: BaseInferenceComposition, predictor: BasePredictor):
         super().__init__()
-        self.input_encoding
-        self.local_inference
-        self.inference_composition
-        self.predictor
-        self.module = torch.nn.Sequential(
-            torch.nn.LazyLinear(out_features * 2),
-            torch.nn.GELU(),
-            torch.nn.LazyLinear(out_features),
-        )
+        self.input_encoding = input_encoding
+        self.local_inference = local_inference
+        self.inference_composition = inference_composition
+        self.predictor = predictor
 
-    @abc.abstractmethod
+    """@abc.abstractmethod
     def abst(self, x: torch.Tensor):
-        raise NotImplementedError
+        raise NotImplementedError"""
 
 
     def forward(self, premise: torch.Tensor, hypothesis: torch.Tensor):
@@ -29,13 +26,3 @@ class Base(torch.nn.Module, abc.ABC):
         return prediction
 
 
-
-class ResnetLike(Base):
-    def forward(self, x: torch.Tensor):
-        # super().forward(x) would raise an error correctly
-        return self.module(x) + x
-
-
-class TestNetwork(Base):
-    def forward(self, x: torch.Tensor):
-        return self.module(x) * 2
