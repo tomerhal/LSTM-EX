@@ -2,17 +2,21 @@ from itertools import chain
 import torch
 
 
-def simple_train_step(optimizer,criterion,batch_size,SEQ_DIM,device,model):
+def simple_train_step(optimizer,criterion,device,model,split_val):
         
     def train_step(x, y):
-        first_hidden = torch.rand((2,batch_size,50)).to(device)
-        decoder_input = torch.rand((batch_size,2)).to(device)
         model.to(device)
-        premise = x[0]
-        hypothesis = x[1]
-        y_hat, attention_output, attention_outputs = model(premise, hypothesis,first_hidden,decoder_input)
+        premise, hypothesis = torch.split(x,split_val,dim=1)
         
-        loss = criterion(y_hat, torch.nn.functional.one_hot(y.reshape(-1,1).long(),num_classes=2).squeeze(1).float())
+        first_hidden_pre = torch.rand_like(premise).to(device)
+        decoder_input_pre = torch.rand_like(premise).to(device)
+        first_hidden_hyp = torch.rand_like(hypothesis).to(device)
+        decoder_input_hyp = torch.rand_like(hypothesis).to(device)
+
+        y_hat = model(premise, hypothesis,first_hidden_pre,decoder_input_pre,first_hidden_hyp,decoder_input_hyp)
+        #print(y_hat)
+        #print(torch.nn.functional.one_hot(y.long(),num_classes=3).squeeze(0))
+        loss = criterion(y_hat, torch.nn.functional.one_hot(y.long(),num_classes=3).squeeze(0).float()).float()
         
         
         loss.backward()
@@ -22,6 +26,6 @@ def simple_train_step(optimizer,criterion,batch_size,SEQ_DIM,device,model):
         optimizer.zero_grad()
     
     
-        return loss.item(), attention_output, attention_outputs
+        return loss.item()
 
     return train_step
