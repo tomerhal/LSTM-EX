@@ -3,12 +3,17 @@ from . import simple_train_step as train_step
 import matplotlib.pyplot as plt
 import numpy as np
 
-def simple_train_loop(train_loader, optimizer,criterion,device,model,split_val,num_of_epochs):
+
+def simple_train_loop(
+    train_loader, optimizer, criterion, device, model, split_val, num_of_epochs
+):
 
     losses = []
     losses_plt = []
 
-    train_step_fuc = train_step.simple_train_step(optimizer,criterion,device,model,split_val)
+    train_step_fuc = train_step.simple_train_step(
+        optimizer, criterion, device, model, split_val
+    )
 
     for epoch in range(num_of_epochs):
         losses = []
@@ -16,14 +21,11 @@ def simple_train_loop(train_loader, optimizer,criterion,device,model,split_val,n
 
             x_batch = x_batch.to(device)
             y_batch = y_batch.to(device)
-            
+
             loss = train_step_fuc(x_batch, y_batch)
-            #print("lossssssssssssssssss",loss)
+            # print("lossssssssssssssssss",loss)
             losses.append(loss)
         losses_plt.append(np.mean(losses))
-        print("mean",np.mean(losses))
+        print("mean", np.mean(losses))
     plt.plot(losses_plt)
     plt.show()
-    
-        
-    
