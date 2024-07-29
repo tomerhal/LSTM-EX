@@ -10,9 +10,7 @@ from data.handle_data import get_datasets
 # from experiments.simple_train_exp import run_simple_train_exp
 from models.ESIM_model import ESIMModel
 import torch
-from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-import numpy as np
 
 # train_data = torch.rand((2,3,3))
 # train_loader = DataLoader(dataset=[train_data[0],train_data[1]], batch_size=1, shuffle=True)

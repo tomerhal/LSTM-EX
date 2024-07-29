@@ -1,4 +1,3 @@
-import abc
 import torch
 from inference_levels.InputEncoders.input_encoding import BaseInputEncoder
 from inference_levels.local_inferencers.local_inference import BaseLocalInference
