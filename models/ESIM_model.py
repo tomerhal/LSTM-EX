@@ -9,10 +9,13 @@ class ESIMModel(BaseModel):
         super().__init__(input_encoding,local_inference,infrence_composition,predictor)
 
 
-    def forward(self, premise: torch.Tensor, hypothesis: torch.Tensor, h0, c0):
-        a_hat, b_hat = self.input_encoding(premise,hypothesis, h0, c0)
+    def forward(self, premise: torch.Tensor, hypothesis: torch.Tensor, h0_p, c0_p, h0_h, h1_h):
+        a_hat, b_hat = self.input_encoding(premise,hypothesis, h0_p, c0_p, h0_h, h1_h)
+        #print('a_hat, b_hat',a_hat, b_hat)
         m_a, m_b = self.local_inference(a_hat,b_hat)
-        v_a, v_b = self.inference_composition(m_a,m_b, h0, c0)   #TODO gets h_t-1 l/r for tree
+        #print('m_a, m_b',m_a, m_b)
+        v_a, v_b = self.inference_composition(m_a,m_b, h0_p, c0_p, h0_h, h1_h)   #TODO gets h_t-1 l/r for tree
+        #print('v_a, v_b',v_a, v_b)
         prediction = self.predictor(v_a, v_b)
         return prediction
 
