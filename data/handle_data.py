@@ -16,7 +16,7 @@ import torch
 import nltk
 
 DATA_PATH = r"C:\Users\VEREDDAS\Documents\Tomer\resources\LSTM"
-CUT_DATA = 10000
+CUT_DATA = 20000
 
 
 class CustomDataset(Dataset):
@@ -113,7 +113,7 @@ def create_datasets(xtrain_seq_premise, xtrain_seq_hypothesis,target):
     print(padded_df.shape)
     features_train, features_test, targets_train, targets_test = train_test_split(padded_df,
                                                                                 target,
-                                                                                test_size = 0.5,
+                                                                                test_size = 0.2,
                                                                                 random_state = 42) 
 
     # Wait, is this a CPU tensor now? Why? Where is .to(device)?
@@ -123,7 +123,7 @@ def create_datasets(xtrain_seq_premise, xtrain_seq_hypothesis,target):
     x_test_tensor = torch.from_numpy(np.array(features_test)).float().to(device)
     y_test_tensor = torch.from_numpy(np.array(targets_test)).float().to(device)
 
-    train_data = CustomDataset(x_train_tensor, y_train_tensor)
+    train_data = TensorDataset(x_train_tensor, y_train_tensor)
     print(train_data[0])
 
     test_data = TensorDataset(x_test_tensor, y_test_tensor)
@@ -153,6 +153,11 @@ def get_datasets():
         pickle.dump(xtrain_seq_hypothesis.numpy(), f)
     split_val = len(xtrain_seq_premise[0])
     train_data, test_data = create_datasets(xtrain_seq_premise, xtrain_seq_hypothesis,y_train)
+    #with open("train_data.pkl", "wb") as f:
+    #    pickle.dump(train_data.data.numpy(), f)
+    #with open("test_data.pkl", "wb") as f:
+    #    pickle.dump(test_data.data.numpy(), f)
+    #print('split val= ', split_val)
     return train_data, test_data, split_val
 
 def get_datasets_from_pkl():
@@ -161,6 +166,11 @@ def get_datasets_from_pkl():
         xtrain_seq_premise = pickle.load(f)
     with open("xtrain_seq_hypothesis.pkl", "rb") as f:
         xtrain_seq_hypothesis = pickle.load(f)
+    """with open("train_data.pkl", "rb") as f:
+        train_data = TensorDataset(torch.from_numpy(pickle.load(f)))
+    with open("test_data.pkl", "rb") as f:
+        test_data = TensorDataset(torch.from_numpy(pickle.load(f)))
+        split_val = len(0)"""
     split_val = len(xtrain_seq_premise[0])
     train_data, test_data = create_datasets(torch.tensor(xtrain_seq_premise), torch.tensor(xtrain_seq_hypothesis),y_train)
     return train_data, test_data, split_val
